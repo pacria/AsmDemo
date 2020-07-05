@@ -1,0 +1,19 @@
+
+
+CODE SEGMENT
+    ASSUME CS:CODE
+START:
+MOV AH, 2
+MOV DL, 'A'
+MOV CX, 06H 
+
+
+
+SHOW:
+    INT 21H
+    INC DL 
+    LOOPNZ SHOW  
+    
+
+CODE ENDS  
+    END START

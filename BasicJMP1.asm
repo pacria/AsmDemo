@@ -1,0 +1,23 @@
+DATA SEGMENT 
+    TABLE DW 3400H, 5600H, 3 DUP(1212H, 2323H)
+DATA ENDS
+
+CODE SEGMENT
+    ASSUME CS:CODE, DS:DATA
+    
+START:
+    MOV AX, DATA
+    MOV DS, AX
+    
+    LEA BX, TABLE
+    MOV SI, 06H   
+    
+    JMP DWORD PTR[BX+SI+2]   ;Question: Cs =? IP = ? After A JMP 
+    
+    MOV AH, 4CH
+    INT 21H
+CODE ENDS
+
+    END START
+    
+    
