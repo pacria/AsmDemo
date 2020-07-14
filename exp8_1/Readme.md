@@ -8,7 +8,7 @@
 
 ### 实验内容、目的与要求
 
-（*原唐都实验教材4.10D/A转换实验*）
+（*原唐都实验教材4.10D/A转换实验*  To check the circuit, click [here](https://github.com/pacria/AsmDemo/blob/homework/exp8_1/media/circuit/exp8_1new.SVG)）
 
 **实验内容**：
 
