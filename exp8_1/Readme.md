@@ -6,7 +6,7 @@
 
 ![](D:\Personal\Learning\CLASS\微机原理\exp\asm_ground\AsmDemo\exp8_1\media\circuit\exp8_1new.SVG)
 
-# 实验名称  8-1 D/A转换实验
+#   8-1 D/A转换实验
 
 ### 实验内容、目的与要求
 
