@@ -2,8 +2,6 @@
 
 
 
-
-
 ![](D:\Personal\Learning\CLASS\微机原理\exp\asm_ground\AsmDemo\exp8_1\media\circuit\exp8_1new.SVG)
 
 #   8-1 D/A转换实验
