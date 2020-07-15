@@ -1,0 +1,405 @@
+Microsoft (R) Macro Assembler Version 6.11		    07/15/20 15:51:45
+tempfile.asm						     Page 1 - 1
+
+
+ = 0005				DLENGTH EQU 5
+ = 002D				MINUS EQU 2DH ; '-'
+ = 003D				EQUAL EQU 3DH ;'='
+
+ 0000				DATAS SEGMENT
+ 0000 33 32 34 30 34		    DATA1 DB '3', '2', '4', '0', '4'
+ 0005 32 39 35 31 32		    DATA2 DB '2', '9', '5', '1', '2'
+				    ;DATA1 DB '12789'
+				;    DATA2 DB '49923'
+				    ;DATA1 DB '213209'
+				    ;DATA2 DB '329978'
+
+ 000A  0005 [			    ASC DB 5 DUP('0'), '$'
+        30
+       ] 24
+				    ;40423
+				    
+ 0010  0005 [			    HEX_BUF DB 5 DUP(0)
+        00
+       ]
+				    
+ 0015  0003 [			    HEX DB 3 DUP(0) 
+        00
+       ]
+				    
+ 0018  0003 [			    HEX1 DB 3 DUP(0)
+        00
+       ]
+ 001B  0003 [			    HEX2 DB 3 DUP(0)
+        00
+       ]
+				    
+ 001E  0005 [			    RES_ASC DB 5 DUP('0'), '$'
+        30
+       ] 24
+
+ 0024				DATAS ENDS
+
+ 0000				STACKS SEGMENT
+				    ;此处输入堆栈段代码
+ 0000				STACKS ENDS
+
+ 0000				CODES SEGMENT
+				    ASSUME CS:CODES,DS:DATAS,SS:STACKS
+
+				    
+				    ;此处输入代码段代码  
+ 0000				START:             
+ 0000  B8 ---- R		    MOV AX,DATAS
+ 0003  8E D8			    MOV DS,AX
+ 0005  8E C0			    MOV ES,AX 
+				    
+ 0007  8D 36 0000 R		    LEA SI, DATA1
+ 000B  8D 3E 0018 R		    LEA DI, HEX1
+ 000F  E8 002F			    CALL FIRST   ; Now HEX1 = (hex) DATA1
+				    
+ 0012  B2 2D			    MOV DL, MINUS
+ 0014  B4 02			    MOV AH, 2
+ 0016  CD 21			    INT 21H 
+				                 ; Print Minus '-'
+				    
+ 0018  8D 36 0005 R		    LEA SI, DATA2
+ 001C  8D 3E 001B R		    LEA DI, HEX2
+ 0020  E8 001E			    CALL FIRST   ; Now HEX2 = (hex) DATA2
+				    
+ 0023  B2 3D			    MOV DL, EQUAL
+ 0025  B4 02			    MOV AH, 2
+ 0027  CD 21			    INT 21H      ; Print Equal '='
+				    
+ 0029  E8 00FA			    CALL SUBHEX  ; Now HEX = HEX1 - HEX2
+				    
+ 002C  E8 00CB			    CALL HEXTBCD ; Now HEX_BUF = (bcd) HEX
+				    
+ 002F  8D 3E 001E R		    LEA DI, RES_ASC
+ 0033  E8 0077			    CALL BCDTASC ; Now RES_ASC = (ascii) HEX_BUF
+				    
+ 0036  8D 36 001E R		    LEA SI, RES_ASC
+ 003A  E8 0028			    CALL SHOW
+
+
+
+				    
+				    ;CALL SHOW
+				;    
+				;    LEA SI, ASC
+				;    
+				;    CALL MAKEHEXBUF
+				;    
+				;    CALL GENHEX
+				;    
+				;    ; HEX -> HEX1
+				;    LEA SI, HEX
+				;    LEA DI, HEX1
+				;    MOV CX, 3
+				;    CLD
+				;    REP MOVSB
+				;    
+				;    LEA SI, DATA2
+				;    CALL SHOW
+				;    LEA SI, ASC
+				;    CALL MAKEHEXBUF
+				;    CALL GENHEX
+				;    
+				;    LEA SI, HEX
+				;    LEA DI, HEX2
+				;    MOV CX, 3
+				;    CLD
+				;    REP MOVSB 
+				    
+ 003D  B4 4C			    MOV AH, 4CH
+ 003F  CD 21			    INT 21H
+
+ 0041				FIRST PROC 
+ 0041  50			    PUSH AX
+ 0042  53			    PUSH BX
+ 0043  51			    PUSH CX
+ 0044  52			    PUSH DX
+ 0045  56			    PUSH SI
+ 0046  57			    PUSH DI
+				    
+ 0047  E8 001B			    CALL SHOW
+ 004A  8D 36 000A R		    LEA SI, ASC
+ 004E  E8 003D			    CALL ASCTBCD
+ 0051  E8 007B			    CALL BCDTHEX
+				    
+ 0054  8D 36 0015 R		    LEA SI, HEX
+ 0058  B9 0003			    MOV CX, 3
+ 005B  FC			    CLD 
+ 005C  F3/ A4			    REP MOVSB
+				    
+ 005E  5F			    POP DI
+ 005F  5E			    POP SI
+ 0060  5A			    POP DX
+ 0061  59			    POP CX
+ 0062  5B			    POP BX
+ 0063  58			    POP AX
+ 0064  C3			    RET
+ 0065				FIRST ENDP    
+
+ 0065				SHOW PROC               ; [SI] -> ASC(REVERESED) 
+				                        ; AND THEN TO SHOW IT
+ 0065  50			    PUSH AX
+ 0066  53			    PUSH BX
+ 0067  51			    PUSH CX
+ 0068  52			    PUSH DX
+ 0069  56			    PUSH SI
+ 006A  57			    PUSH DI        
+				    
+ 006B  8D 3E 000A R		    LEA DI, ASC
+				    
+				    
+ 006F  B1 05			    MOV CL, DLENGTH
+ 0071  33 DB			    XOR BX, BX    
+				    
+
+ 0073				INNERLOOP:    
+ 0073  8A D9			    MOV BL, CL
+ 0075  4B			    DEC BX
+ 0076  8A 00			    MOV AL, BYTE PTR[BX+SI]
+ 0078  88 05			    MOV BYTE PTR[DI], AL
+ 007A  47			    INC DI
+ 007B  FE C9			    DEC CL
+ 007D  75 F4			    JNZ INNERLOOP 
+				    
+				    
+				    ; Print the ASC
+ 007F  8D 16 000A R		    LEA DX, ASC
+ 0083  B4 09			    MOV AH, 09H
+ 0085  CD 21			    INT 21H 
+				    
+ 0087  5F			    POP DI
+ 0088  5E			    POP SI
+ 0089  5A			    POP DX
+ 008A  59			    POP CX
+ 008B  5B			    POP BX
+ 008C  58			    POP AX
+ 008D  C3			    RET 
+ 008E				SHOW ENDP
+				                                                                                                             
+
+ 008E				ASCTBCD PROC      ; [SI](ASC) -> HEX_BUF
+ 008E  50			    PUSH AX
+ 008F  53			    PUSH BX
+ 0090  51			    PUSH CX
+ 0091  52			    PUSH DX
+ 0092  56			    PUSH SI
+ 0093  57			    PUSH DI  
+				     
+ 0094  8D 3E 0010 R		    LEA DI, HEX_BUF      
+ 0098  B1 05			    MOV CL, DLENGTH   
+				    
+ 009A				INNER_ASCTBCD:    
+
+ 009A  8A 04			    MOV AL, BYTE PTR[SI]
+ 009C  2C 30			    SUB AL, 30H
+ 009E  88 05			    MOV BYTE PTR[DI], AL
+ 00A0  47			    INC DI
+ 00A1  46			    INC SI
+ 00A2  FE C9			    DEC CL
+ 00A4  75 F4			    JNZ INNER_ASCTBCD
+				    
+ 00A6  5F			    POP DI
+ 00A7  5E			    POP SI
+ 00A8  5A			    POP DX
+ 00A9  59			    POP CX
+ 00AA  5B			    POP BX
+ 00AB  58			    POP AX
+ 00AC  C3			    RET
+ 00AD				ASCTBCD ENDP
+
+
+ 00AD				BCDTASC PROC    ; HEX_BUF -> [DI](RES_ASC)
+ 00AD  50			    PUSH AX
+ 00AE  53			    PUSH BX
+ 00AF  51			    PUSH CX
+ 00B0  52			    PUSH DX
+ 00B1  56			    PUSH SI
+ 00B2  57			    PUSH DI
+				    
+ 00B3  8D 36 0010 R		    LEA SI, HEX_BUF
+
+ 00B7  B1 05			    MOV CL, DLENGTH
+				    
+ 00B9				INNER_BCDTASC:
+ 00B9  8A 04			    MOV AL, BYTE PTR[SI]
+ 00BB  04 30			    ADD AL, 30H
+ 00BD  88 05			    MOV BYTE PTR[DI], AL
+ 00BF  46			    INC SI
+ 00C0  47			    INC DI
+ 00C1  FE C9			    DEC CL
+ 00C3  75 F4			    JNZ INNER_BCDTASC
+				    
+ 00C5  C6 05 24			    MOV BYTE PTR[DI], '$'
+				    
+ 00C8  5F			    POP DI
+ 00C9  5E			    POP SI
+ 00CA  5A			    POP DX
+ 00CB  59			    POP CX
+ 00CC  5B			    POP BX
+ 00CD  58			    POP AX
+ 00CE  C3			    RET
+ 00CF				BCDTASC ENDP
+				    
+
+ 00CF				BCDTHEX PROC    ; HEX_BUF -> HEX
+ 00CF  50			    PUSH AX
+ 00D0  53			    PUSH BX
+ 00D1  51			    PUSH CX
+ 00D2  56			    PUSH SI
+ 00D3  57			    PUSH DI
+				    
+ 00D4  8D 36 0010 R		    LEA SI, HEX_BUF
+ 00D8  8D 3E 0015 R		    LEA DI, HEX
+ 00DC  BB 000A			    MOV BX, 000AH
+ 00DF  33 C0			    XOR AX, AX
+ 00E1  B1 05			    MOV CL, DLENGTH
+
+ 00E3				INNER_BCDTHEX:    
+ 00E3  F7 E3			    MUL BX
+ 00E5  02 04			    ADD AL, BYTE PTR[SI]
+ 00E7  83 D2 00			    ADC DX, 0
+ 00EA  46			    INC SI
+ 00EB  FE C9			    DEC CL
+ 00ED  75 F4			    JNZ INNER_BCDTHEX
+				    
+ 00EF  89 05			    MOV WORD PTR[DI], AX
+ 00F1  88 55 02			    MOV [DI+2], DL
+				    
+ 00F4  5F			    POP DI
+ 00F5  5E			    POP SI
+ 00F6  59			    POP CX
+ 00F7  5B			    POP BX
+ 00F8  58			    POP AX
+ 00F9  C3			    RET
+ 00FA				BCDTHEX ENDP 
+
+
+ 00FA				HEXTBCD PROC   ; HEX -> HEX_BUF
+ 00FA  50			    PUSH AX
+ 00FB  53			    PUSH BX
+ 00FC  51			    PUSH CX
+ 00FD  52			    PUSH DX
+ 00FE  56			    PUSH SI
+ 00FF  57			    PUSH DI
+				    
+ 0100  8D 36 0015 R		    LEA SI, HEX
+ 0104  8D 3E 0010 R		    LEA DI, HEX_BUF
+				    
+ 0108  33 D2			    XOR DX, DX
+ 010A  8B 04			    MOV AX, WORD PTR[SI]
+ 010C  8A 54 02			    MOV DL, [SI+2]
+				    
+ 010F  BB 000A			    MOV BX, 000AH
+ 0112				INNER_HEXTBCD:
+ 0112  F7 F3			    DIV BX
+ 0114  88 15			    MOV BYTE PTR[DI], DL
+ 0116  BA 0000			    MOV DX, 0
+ 0119  47			    INC DI
+ 011A  83 F8 00			    CMP AX, 0
+ 011D  75 F3			    JNZ INNER_HEXTBCD 
+				    
+ 011F  5F			    POP DI
+ 0120  5E			    POP SI
+ 0121  5A			    POP DX
+ 0122  59			    POP CX
+ 0123  5B			    POP BX
+ 0124  58			    POP AX
+ 0125  C3			    RET
+ 0126				HEXTBCD ENDP
+
+
+
+ 0126				SUBHEX PROC    ; HEX1 - HEX2 -> HEX
+ 0126  50			    PUSH AX
+ 0127  53			    PUSH BX
+ 0128  51			    PUSH CX
+ 0129  52			    PUSH DX
+ 012A  56			    PUSH SI
+ 012B  57			    PUSH DI
+				     
+ 012C  8D 36 0018 R		    LEA SI, HEX1
+ 0130  8D 3E 001B R		    LEA DI, HEX2
+ 0134  8D 1E 0015 R		    LEA BX, HEX 
+ 0138  B1 03			    MOV CL, 3
+ 013A  F8			    CLC
+ 013B				SUBTRACT_LOOP:
+				    
+ 013B  8A 04			    MOV AL, BYTE PTR[SI]
+ 013D  1A 05			    SBB AL, BYTE PTR[DI]
+ 013F  88 07			    MOV BYTE PTR[BX], AL
+ 0141  43			    INC BX
+ 0142  46			    INC SI
+ 0143  47			    INC DI
+ 0144  FE C9			    DEC CL
+ 0146  75 F3			    JNZ SUBTRACT_LOOP
+				    
+ 0148  5F			    POP DI
+ 0149  5E			    POP SI
+ 014A  5A			    POP DX
+ 014B  59			    POP CX
+ 014C  5B			    POP BX
+ 014D  58			    POP AX
+ 014E  C3			    RET
+ 014F				SUBHEX ENDP
+				  
+				    
+ 014F				CODES ENDS
+				      END START
+Microsoft (R) Macro Assembler Version 6.11		    07/15/20 15:51:45
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 014F	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 0024	  Para	  Private 
+STACKS . . . . . . . . . . . . .	16 Bit	 0000	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+ASCTBCD  . . . . . . . . . . . .	P Near	 008E	  CODES	Length= 001F Public
+  INNER_ASCTBCD  . . . . . . . .	L Near	 009A	  CODES	
+BCDTASC  . . . . . . . . . . . .	P Near	 00AD	  CODES	Length= 0022 Public
+  INNER_BCDTASC  . . . . . . . .	L Near	 00B9	  CODES	
+BCDTHEX  . . . . . . . . . . . .	P Near	 00CF	  CODES	Length= 002B Public
+  INNER_BCDTHEX  . . . . . . . .	L Near	 00E3	  CODES	
+FIRST  . . . . . . . . . . . . .	P Near	 0041	  CODES	Length= 0024 Public
+HEXTBCD  . . . . . . . . . . . .	P Near	 00FA	  CODES	Length= 002C Public
+  INNER_HEXTBCD  . . . . . . . .	L Near	 0112	  CODES	
+SHOW . . . . . . . . . . . . . .	P Near	 0065	  CODES	Length= 0029 Public
+  INNERLOOP  . . . . . . . . . .	L Near	 0073	  CODES	
+SUBHEX . . . . . . . . . . . . .	P Near	 0126	  CODES	Length= 0029 Public
+  SUBTRACT_LOOP  . . . . . . . .	L Near	 013B	  CODES	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+ASC  . . . . . . . . . . . . . .	Byte	 000A	  DATAS	
+DATA1  . . . . . . . . . . . . .	Byte	 0000	  DATAS	
+DATA2  . . . . . . . . . . . . .	Byte	 0005	  DATAS	
+DLENGTH  . . . . . . . . . . . .	Number	 0005h	 
+EQUAL  . . . . . . . . . . . . .	Number	 003Dh	 
+HEX1 . . . . . . . . . . . . . .	Byte	 0018	  DATAS	
+HEX2 . . . . . . . . . . . . . .	Byte	 001B	  DATAS	
+HEX_BUF  . . . . . . . . . . . .	Byte	 0010	  DATAS	
+HEX  . . . . . . . . . . . . . .	Byte	 0015	  DATAS	
+MINUS  . . . . . . . . . . . . .	Number	 002Dh	 
+RES_ASC  . . . . . . . . . . . .	Byte	 001E	  DATAS	
+START  . . . . . . . . . . . . .	L Near	 0000	  CODES	
+
+	   0 Warnings
+	   0 Errors
