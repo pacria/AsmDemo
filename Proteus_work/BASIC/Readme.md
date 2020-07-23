@@ -24,11 +24,11 @@
 
 具体的做法是，点击Proteus的播放按钮进行仿真，第一步就是选择要做的实验（从`exp0`~`exp7`)进行选择
 
-<img src=".\media\repo0.png" style="zoom:60%;" />
+<img src=".\media\repo0.png" width="480" />
 
-例如，我们点击EXP0对应的按钮（*BUTTON*)，将会进行实验0`exp0`，已经预置为是8255的基本输入输出实验——PA端口的LED灯亮灭取决于PB端口的拨动开关输入（更多可见[exp5-1][https://github.com/pacria/AsmDemo/tree/homework/exp5_1]。然后点击proteus的终止仿真键，再次开始时将重新进入实验选择步骤，这一次我们再点击EXP1对应的按钮，将执行`exp1`——同样已经被预置了，这是一个流水灯实验(更多可见[exp5-2][https://github.com/pacria/AsmDemo/tree/homework/exp5_2])
+例如，我们点击EXP0对应的按钮（*BUTTON*)，将会进行实验0`exp0`，已经预置为是8255的基本输入输出实验——PA端口的LED灯亮灭取决于PB端口的拨动开关输入（更多可见[exp5-1](https://github.com/pacria/AsmDemo/tree/homework/exp5_1)。然后点击proteus的终止仿真键，再次开始时将重新进入实验选择步骤，这一次我们再点击EXP1对应的按钮，将执行`exp1`——同样已经被预置了，这是一个流水灯实验(更多可见[exp5-2](https://github.com/pacria/AsmDemo/tree/homework/exp5_2)
 
-事实上，这里的`exp0`~`exp4`都已经被预置了。关于这些实验分别表示何种内容，更详细的内容分别在[exp5-1][https://github.com/pacria/AsmDemo/tree/homework/exp5_1], [exp5-2][https://github.com/pacria/AsmDemo/tree/homework/exp5_2], [exp6-2][https://github.com/pacria/AsmDemo/tree/homework/exp6_2], [exp6-3][https://github.com/pacria/AsmDemo/tree/homework/exp6_3]可以见到。下面来看一下如何利用此平台编写自己的实验程序。
+事实上，这里的`exp0`~`exp4`都已经被预置了。关于这些实验分别表示何种内容，更详细的内容分别在[exp5-1](https://github.com/pacria/AsmDemo/tree/homework/exp5_1), [exp5-2](https://github.com/pacria/AsmDemo/tree/homework/exp5_2), [exp6-2](https://github.com/pacria/AsmDemo/tree/homework/exp6_2), [exp6-3](https://github.com/pacria/AsmDemo/tree/homework/exp6_3)可以见到。下面来看一下如何利用此平台编写自己的实验程序。
 
 由于还有`exp5`, `exp6`,`exp7`没有被预置，假设我们希望写一个新的流水灯程序，并将其固定到EXP5,首先打开Proteus工程文件的Source Code界面，定位到如下代码
 
@@ -62,9 +62,9 @@ EXP1_ENDLESS:
 
 随后，选择“Build"$\rightarrow$"Build Project"，查看是否编译正常（显示`Compiled Successfully`）
 
-![check](.\media\repo1.png)
+![check](https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC/media/repo1.png)
 
-> 关于如何设置*Masm32*的编译环境，查看[这里][https://github.com/pacria/AsmDemo/tree/homework/how_to/About Masm]
+> 关于如何设置*Masm32*的编译环境，查看[这里](https://github.com/pacria/AsmDemo/tree/homework/how_to/About Masm)
 
 
 
@@ -72,7 +72,7 @@ EXP1_ENDLESS:
 
 在该实验平台（自建）上，共有8个译码地址段（供片间寻址）可供使用，它们分别是
 
-<img src=".\media\repo2.png" style="zoom:52%;" />
+<img src=".\media\repo2.png" width="480"/>
 
 在硬件电路上, 8255的片选端#CS接IOY0，8255副片接IOY1， 8253接IOY2（8259目前没有做）。其中A1, A2两根地址线用于片内寻址，源代码已经设置了基本的地址如
 
@@ -111,7 +111,7 @@ EXP1_ENDLESS:
 
   Proteus这款仿真工具的仿真用时与整体的元器件复杂度有很大关联，如果组件过多会很卡以至于线程被强制终止。这一现象在完成有关8253定时计数实验时尤其明显——因为”过高“的时钟频率带来的仿真的延时。所以在这个平台上，我把外部信号源接了一根空线，就是为了避免不必要的仿真延时。
 
-  <img src=".\media\repo3.png" style="zoom:38%;" />
+  <img src=".\media\repo3.png" width="320" />
 
   就像上面这个处理，在有关8253的实验时，需要把信号源接到SW上去；不用时则像上图中悬置即可，算是一种不得已的折中了
 
@@ -121,7 +121,7 @@ EXP1_ENDLESS:
 
 + **开关阵列异常**`fatal`
 
-  <img src="D:\Personal\Learning\CLASS\微机原理\exp\asm_ground\AsmDemo\Proteus_work\BASIC\media\bug1.png" style="zoom:33%;" />
+  <img src="https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC/media/bug1.png" width="280" />
 
   有时你可能会遇到这样的情景...
 
@@ -129,7 +129,7 @@ EXP1_ENDLESS:
 
   无
 
-  目前同样采用的是一种折中的办法——减少开关器件的使用，在有关8253的实验中，我大幅度缩减了不必要的开关器件使用，关于那个Proteus工程文件，可以看[这里][https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/Timer/source]
+  目前同样采用的是一种折中的办法——减少开关器件的使用，在有关8253的实验中，我大幅度缩减了不必要的开关器件使用，关于那个Proteus工程文件，可以看[这里](https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/Timer/source)
 
   当然了，还有一种”不是解决办法的解决办法“，那就是重复仿真几次
 
@@ -141,7 +141,7 @@ EXP1_ENDLESS:
 
   首先，查看你的Proteus 源代码界面，确定是在`Debug`模式而非`Release`模式下
 
-  ![](.\media\bug2.png)
+  <img src="https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC/media/bug2.png" alt="debug" width="280" />
 
   其次，保险起见，再次编译一遍（快捷键：Ctrl + F7)
 
@@ -161,7 +161,7 @@ EXP1_ENDLESS:
 
   Proteus自带的VSM Debug是一个不错的工具，可以单步执行，设置断点，查看工作情况。但不幸的是，这个工具本身也存在瑕疵（首先说明：这是对8086系列在Proteus8版本下的测试）
 
-  ![](.\media\bug3.png)
+  <img src="https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC/media/bug3.png" style="zoom:80%;" />
 
   上图是利用Proteus工具对某个工程进行Debug的起始过程截图（”Debug" $\rightarrow$ "Start VSM Debugging")
 
