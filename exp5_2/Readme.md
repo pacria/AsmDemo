@@ -1,4 +1,4 @@
-![](.\media\96a82682983888fcedf86cd863a2f358.png)
+![](media\96a82682983888fcedf86cd863a2f358.png)
 
 # 流水灯显示实验
 
@@ -20,7 +20,9 @@
 
 在这个实验中，8255的A口和B口均作输出——也即均工作在方式0下，在实验一的基础上，我们可以稍加改进，使得B口同样接一个8单元LED阵列即可。
 
-![](./media/29ebe5a68d8e86d20913d5c22a9cb6ac.png)
+<div align=center><img src="./media/29ebe5a68d8e86d20913d5c22a9cb6ac.png" width="1060" /></div>
+
+<div align=center>PA端与PB端的双LED阵列</div>
 
 
 
@@ -28,7 +30,7 @@
 
 根据这些要求，可以知道首先对A口输出数据为`10000000B`即`80H`，B口输出数据为`00000001B`即`01H`。在接下来的循环中，A口输出数据在时间上应当循环右移，B口输出数据应当循环左移。从指令上讲，循环移位指令又有带进位标志位和不带进位标志位两种，这里使用不带进位标志位的循环移位指令——左移`ROL`，右移`ROR`
 
-在[综合实验平台][https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC]（自建）上，由于只有PA端口接了LED阵列，所以这里仅用PA端口的LED阵列流水灯示例说明大意。我们设置这是在`EXP1`段中执行的，所以将程序定位到`EXP1`处，代码如下：
+在[综合实验平台](https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC)（自建）上，由于只有PA端口接了LED阵列，所以这里仅用PA端口的LED阵列流水灯示例说明大意。我们设置这是在`EXP1`段中执行的，所以将程序定位到`EXP1`处，代码如下：
 
 ```assembly
 EXP1:
@@ -77,7 +79,7 @@ DELAY ENDP
 
 
 
-![](media/96a82682983888fcedf86cd863a2f358.png)
+<div align=center><img src="media/96a82682983888fcedf86cd863a2f358.png" width="480" /></div>
 
 
 
