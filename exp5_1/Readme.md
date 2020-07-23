@@ -20,7 +20,9 @@
 
 本实验主要使用8255这种可编程并行接口，它有40个引脚，如下图所示
 
-![](./media/b08be722b7d6a5c0032ca371d1e8f4aa.png)
+<div align=center><img src="./media/b08be722b7d6a5c0032ca371d1e8f4aa.png" width="220" /></div>
+
+<div align=center>8255引脚图</div>
 
 
 
@@ -36,7 +38,7 @@
 
 `A0`, `A1`：这是口地址选择信号线， `A0`, `A1`线上的组合经片内译码可以产生四个有效地址，用来完成片内寻址，如下表所示：
 
-<img src=".\media\repo1.png" style="zoom:65%;" />
+<div align=center><img src=".\media\repo1.png" width="520" /></div>
 
 在使用中，`A0`, `A1`常接系统总线的`A0`, `A1`，与\#CS一起决定8255的接口地址。
 
@@ -50,9 +52,9 @@
 
 8255内部的逻辑框图如下，其事实上只有两组控制单元，C的高四位和低四位是分开的。
 
-![微机原理复习笔记—可编程并行接口芯片8255](./media/3b4baa8441bcf8a987f80953da0d1a80.png)
+<div align=center><img src="./media/3b4baa8441bcf8a987f80953da0d1a80.png" alt="微机原理复习笔记—可编程并行接口芯片8255" width="480"/></div>
 
-
+<div align=center>8255内部框图</div>
 
 关于A口，B口，C口具体用作输出或是输入或是双向皆可，可以由软件编程指定，有三种工作模式，分别是方式0，方式1和方式2——本实验三个分实验其主要工作在方式0和方式1下，故对这两种工作方式作一介绍：
 
@@ -61,13 +63,15 @@
 2.  方式1：也即选通控制方式，A口或B口仍可作为输入或输出口（但不能双向），且在选通控制信号下完成。下图展示了方式1下A,
     B用作输出接口的引脚接法示例。
 
-<img src="./media/1b0fdacb9909e37bbc935473e20d67e3.png" style="zoom:72%;" />
+<div align=center><img src="./media/1b0fdacb9909e37bbc935473e20d67e3.png" width="460"/></div>
 
-
+<div align=center>8255方式1输出引脚示图</div>
 
 下图展示的是A, B用作输出接口的引脚接法。
 
-<img src="./media/dc25cd1f5874942756ba566134c41113.png" style="zoom:72%;" />
+<div align=center><img src="./media/dc25cd1f5874942756ba566134c41113.png" width="460" /></div>
+
+<div align=center>8255方式1输入示图</div>
 
 
 
@@ -77,7 +81,7 @@
 
 ### 实验过程
 
-在[综合实验平台][https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC]（自建）上，我们利用8255主片进行实验。其译码地址为`8000H`~`8006H`，对应的部分为
+在[综合实验平台](https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC)（自建）上，我们利用8255主片进行实验。其译码地址为`8000H`~`8006H`，对应的部分为
 
 ```assembly
 IOY0 EQU 8000H    ; IOY0-8255
@@ -89,29 +93,23 @@ MCU8255MODE EQU IOY0+06H     ; Mode Control
 
 
 
-
-
 然后，我们将A口用于输出，B口用于输入，所以A口接LED阵列，B口接拨码开关阵列。设计B输入开关处于ON状态时为高电平，A接LED发光时为高电平，这样就可以将B的输入直接与A的输出对应起来（不需要取反这样的操作），对应的输入输出电路为
 
-<img src=".\media\repo2.png" style="zoom:67%;" />
-
-
+<div align=center><img src=".\media\repo2.png" width="480" alt="开关与LED阵列"/></div>
 
 
 
 同时给出（老的）总实验接线图为（请放大查看），其中MN/\#MX引脚接高电平，8086工作在最小模式下。
 
-![](media/8ab140450a88e9f7353e49c73629c3ed.png)
-
-
+<div align=center><img src="media/8ab140450a88e9f7353e49c73629c3ed.png" width="840"/></div>
 
 
 
 完成等硬件电路的搭建后，我们来考虑一下软件的设计，8255通过控制字的方式设置它的工作方式，控制字有两种，一种是状态控制字，用来指定A,B,C口各状态——工作在方式0，方式1或方式2，作输入或输出；第二种是位控制字，前面说到C口可以按位置数，位控制字就是用于这种初始化。其中，方式控制字的格式为
 
-<img src="./media/4283aaae9f05eb4fabe47af93bb71a35.png" style="zoom:20%;" />
+<div align=center><img src="./media/4283aaae9f05eb4fabe47af93bb71a35.png" width="320" /></div>
 
-
+<div align=center>8255方式字</div>
 
 所以可以看出这里的方式控制字应为`1000x01xB`，C口没有用到，就将这里的X记为0，所以状态控制字应为`10000010B`即`82H`。拨动开关阵列接B端口作输出，LED阵列接A端口作输出。使用无条件传送方式，从B口读入并行开关数据，再送入A端口。为了让这个过程可以持续下去，故放在一个永久循环中。
 
@@ -143,7 +141,7 @@ OUT DX, acc
 
 两种，要被送出的数据为`acc`。
 
-在[综合实验平台][https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC]（自建）上，将源代码定位到`EXP0`处，按照上述思路，通过无条件查询方式，写出`EXP0`段的代码为
+在[综合实验平台](https://github.com/pacria/AsmDemo/tree/homework/Proteus_work/BASIC)（自建）上，将源代码定位到`EXP0`处，按照上述思路，通过无条件查询方式，写出`EXP0`段的代码为
 
 ```assembly
 EXP0:  
@@ -173,17 +171,17 @@ EXP0_ENDLESS:
 
 然后进行仿真，在proteus工具中，仿真的选项如下
 
-<img src="./media/6cd275a1337fe9abcb7bba8c91e26199.png" style="zoom:25%;" />
+<div align=center><img src="./media/6cd275a1337fe9abcb7bba8c91e26199.png" width="320"/></div>
 
 
 
 在仿真过程中，首先进行实验类型的选择，按下对应于EXP0的按钮（BUTTON)，此时程序即进入`EXP0`段
 
-<img src=".\media\repo3.png" style="zoom:50%;" />
+<div align=center><img src=".\media\repo3.png" width="480" /></div>
 
 可以看到LED阵列起初是全亮的，调动拨动开关的一位至OFF，发现对应的LED灭灯。再调至ON，对应的LED又重新亮起
 
-<img src="./media/cefccd541732ea6844050686f769a911.png" style="zoom: 50%;" />
+<div align=center><img src="./media/cefccd541732ea6844050686f769a911.png" width="480" /></div>
 
 
 
