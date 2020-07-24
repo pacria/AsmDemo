@@ -82,7 +82,7 @@
 
 + Install *Masm32*
 
-  > [check here]([https://github.com/pacria/AsmDemo/tree/homework/how_to/About%20Masm](https://github.com/pacria/AsmDemo/tree/homework/how_to/About Masm))
+  > [check here](https://github.com/pacria/AsmDemo/tree/homework/how_to/About%20Masm)
 
 
 
